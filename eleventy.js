@@ -1,6 +1,6 @@
 // .eleventy.js
 module.exports = function(eleventyConfig) {
-    // copy /src/assets → /assets in the output
+    // Copy /src/assets to /assets in the output
     eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
   
     return {
@@ -10,7 +10,7 @@ module.exports = function(eleventyConfig) {
         layouts: "_includes/layouts",
         output: "_site"
       },
-      // IMPORTANT: let .html files use front matter + nunjucks tags
+      // IMPORTANT: allow .html to use front matter & Nunjucks tags
       templateFormats: ["html", "md"],
       htmlTemplateEngine: "njk",
       markdownTemplateEngine: "njk"
