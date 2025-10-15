@@ -1,0 +1,59 @@
+---
+layout: layouts/base.html
+title: My 5 Most-Played Artists (This Month)
+---
+<section class="controls">
+  <label class="small">Search
+    <input id="q" type="search" placeholder="artist or tag…">
+  </label>
+  <label class="small">Mood
+    <select id="mood">
+      <option value="">All</option>
+      <option>night</option>
+      <option>sad</option>
+      <option>focus</option>
+      <option>happy</option>
+    </select>
+  </label>
+</section>
+
+<ul id="list" class="grid">
+  {% for post in collections.items | reverse %}
+  <li class="card"
+      data-title="{{ post.data.title | lower }}"
+      data-mood="{{ post.data.mood or '' | lower }}"
+      data-tags="{{ (post.data.tags or []) | join(' ') | lower }}">
+    <a class="block" href="{{ post.url }}">
+      {% if post.data.image %}<img class="thumb" src="{{ post.data.image | url }}" alt="{{ post.data.title }} cover">{% endif %}
+      <h3 class="card-title">{{ post.data.title }}</h3>
+      <p class="muted small">{{ post.date | date("MMM d, yyyy") }}</p>
+      {% if post.data.minutes_listened %}
+        <p class="small">{{ post.data.minutes_listened }} min · {{ post.data.tracks_played }} tracks</p>
+      {% endif %}
+      {% if post.data.tags %}<p class="tags small">{{ post.data.tags | join(', ') }}</p>{% endif %}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+
+<script>
+(function(){
+  const q = document.getElementById('q');
+  const mood = document.getElementById('mood');
+  const items = Array.from(document.querySelectorAll('#list .card'));
+  function apply(){
+    const qv = (q.value||'').toLowerCase().trim();
+    const mv = (mood.value||'').toLowerCase();
+    items.forEach(li=>{
+      const title = li.dataset.title;
+      const tags  = li.dataset.tags;
+      const mmood = li.dataset.mood;
+      const okQ = !qv || title.includes(qv) || tags.includes(qv);
+      const okM = !mv || mmood === mv;
+      li.style.display = (okQ && okM) ? '' : 'none';
+    });
+  }
+  q.addEventListener('input', apply);
+  mood.addEventListener('change', apply);
+})();
+</script>
